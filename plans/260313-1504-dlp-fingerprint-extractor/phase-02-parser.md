@@ -1,5 +1,5 @@
 # Phase 02: Document Parser Module
-Status: ⬜ Pending
+Status: ✅ Complete
 
 ## Objective
 Xây dựng một module chung cho việc đọc và trích xuất text thô từ các định dạng file phổ biến: .txt, .pdf, .docx.

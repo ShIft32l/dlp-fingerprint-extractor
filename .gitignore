@@ -5,3 +5,4 @@ __pycache__/
 logs/
 output/
 .DS_Store
+.brain/

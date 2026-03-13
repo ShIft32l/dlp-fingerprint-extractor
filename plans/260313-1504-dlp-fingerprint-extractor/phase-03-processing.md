@@ -1,5 +1,5 @@
 # Phase 03: Text Processing & Chunking
-Status: ⬜ Pending
+Status: ✅ Complete
 
 ## Objective
 Tiếp nhận chuỗi văn bản mộc (Raw Text) từ Parser, làm sạch và chia nhỏ văn bản thành các câu/cụm từ dài (N-grams hoặc Segments) hợp lệ để gửi cho AI.

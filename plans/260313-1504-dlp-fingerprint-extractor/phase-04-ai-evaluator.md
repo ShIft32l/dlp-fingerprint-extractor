@@ -1,5 +1,5 @@
 # Phase 04: AI Evaluation Engine (Gemini)
-Status: ⬜ Pending
+Status: ✅ Complete
 
 ## Objective
 Gửi các câu/cụm từ văn bản được trích xuất (từ Phase 3) sang cho Gemini AI chấm điểm qua API, lấy lại một danh sách chỉ chứa những Fingerprints "đặc thù nhất" của tài liệu.
