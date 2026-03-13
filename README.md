@@ -24,13 +24,36 @@ DLP Fingerprint Extractor is a specialized tool designed to automate the extract
    # Edit .env with your key
    ```
 
-## Usage (Development)
+## Usage
 
-Currently, the project components can be tested individually:
-- Test Parser: `python src/tests_dummy.py`
-- Test Text Processor: `python src/test_text_processor.py`
-- Test AI Evaluator: `python src/test_ai_evaluator.py`
+The tool is executed via the `main.py` entry point. It automates the entire pipeline: Parsing → Processing → AI Evaluation → Export.
 
-## Next Phases
-- Phase 05: Output Generator & CLI Interface
-- Phase 06: Integration Testing & Bulk Processing
+```bash
+python3 main.py --input path/to/docs --output output/fingerprints.txt --format txt --type "Board Papers"
+```
+
+### Options:
+- `--input`, `-i`: (Required) Path to the folder containing your sample `.pdf`, `.docx`, or `.txt` files.
+- `--output`, `-o`: Path to the output file (Default: `output/fingerprints.txt`).
+- `--format`, `-f`: Output format (`txt` or `csv`). TXT is recommended for direct DLP dictionary import.
+- `--type`, `-t`: Contextual hint for AI (e.g., "Board Papers", "Financial Reports"). Helps AI understand what is "generic" vs "specific".
+
+## Directory Structure
+
+- `main.py`: Main execution orchestrator.
+- `src/`:
+  - `parser.py`: Document text extraction.
+  - `text_processor.py`: Cleaning and phrase filtering.
+  - `ai_evaluator.py`: Gemini AI scoring logic.
+  - `generator.py`: Output file creation.
+  - `config.py`: Environment and API settings.
+- `docs/`:
+  - `BRIEF.md`: Project overview and goals.
+  - `REQUIREMENTS_TESTING.md`: AI quality criteria and prompt strategy.
+
+## Verification
+
+You can verify the setup by running the pipeline on the provided batch samples:
+```bash
+python3 main.py --input ./samples/test_batch_1 --output output/test_results.txt
+```
