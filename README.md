@@ -3,9 +3,10 @@
 DLP Fingerprint Extractor is a specialized tool designed to automate the extraction of high-quality "Fingerprints" (highly specific phrases) from corporate documents (Board Papers, Architecture Docs, etc.). These fingerprints are intended to be used as Custom Sensitive Information Types (SIT) in Microsoft Purview or Zscaler DLP systems.
 
 ## Key Features
-- **Multi-format Support**: Parse text from `.pdf`, `.docx`, and `.txt` files.
-- **Smart Text Processing**: Automatic cleaning of boilerplate text (headers, footers, signatures) and splitting into meaningful sentence candidates.
+- **Multi-format Support**: Parse text from `.pdf`, `.docx`, `.txt`, `.xlsx`, and `.pptx` files.
+- **Smart Text Processing**: Automatic cleaning of boilerplate text (headers, footers, signatures), splitting into meaningful sentence candidates, and tracking duplicate phrase frequencies.
 - **AI Evaluation**: Integration with Google Gemini (1.5 Flash) to score and filter candidate phrases based on organizational specificity.
+- **Dynamic Workflows**: Toggle options to skip AI evaluation (`--skip-ai`) and generate rich `.xlsx` reports with multiple tabs.
 - **Resilitent API Integration**: Built-in exponential backoff for handling Gemini API rate limits.
 
 ## Setup
@@ -33,10 +34,11 @@ python3 main.py --input path/to/docs --output output/fingerprints.txt --format t
 ```
 
 ### Options:
-- `--input`, `-i`: (Required) Path to the folder containing your sample `.pdf`, `.docx`, or `.txt` files.
+- `--input`, `-i`: (Required) Path to the folder containing your sample `.pdf`, `.docx`, `.txt`, `.xlsx`, or `.pptx` files.
 - `--output`, `-o`: Path to the output file (Default: `output/fingerprints.txt`).
-- `--format`, `-f`: Output format (`txt` or `csv`). TXT is recommended for direct DLP dictionary import.
+- `--format`, `-f`: Output format (`txt`, `csv`, or `excel`). Excel is recommended for a rich 3-page report of everything extracted.
 - `--type`, `-t`: Contextual hint for AI (e.g., "Board Papers", "Financial Reports"). Helps AI understand what is "generic" vs "specific".
+- `--skip-ai`: Skip the Gemini AI evaluation phase. Useful for inspecting all parsed candidate phrases or testing extraction offline.
 
 ## Directory Structure
 

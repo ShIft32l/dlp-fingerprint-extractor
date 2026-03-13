@@ -6,12 +6,15 @@ Status: 🟡 In Progress
 DLP Fingerprint Extractor là một công cụ giúp tự động hóa việc trích xuất các cụm từ/câu văn mang tính đặc trưng cao (Fingerprint) từ các tài liệu mẫu (như Board Papers, Architectural Docs). Công cụ sử dụng Google Gemini AI để đánh giá và lọc các cụm từ này, tạo ra một danh sách Custom SIT (Sensitive Information Type) chất lượng cao nhằm nâng cao độ chính xác (giảm False Positive) cho hệ thống Microsoft Purview và Zscaler DLP.
 
 ## Tech Stack
--   **Ngôn ngữ chính:** Python 3.10+
+-   **Ngôn ngữ chính:** Python 3.9+
 -   **Xử lý tài liệu (Document Parsing):** 
-    -   `PyPDF2` hoặc `pdfplumber` (cho file PDF)
+    -   `PyPDF2` (cho file PDF)
     -   `python-docx` (cho file Word .docx)
--   **Xử lý văn bản (NLP/Text Processing):** `nltk` hoặc `spacy` (để tách câu, làm sạch dữ liệu cơ bản)
--   **AI Integration:** `google-generativeai` (Gemini API)
+    -   `openpyxl` (cho file Excel .xlsx)
+    -   `python-pptx` (cho PowerPoint .pptx)
+-   **Xử lý văn bản (NLP/Text Processing):** `nltk` (để tách câu, làm sạch dữ liệu cơ bản)
+-   **Tạo báo cáo:** `pandas` (Xuất file định dạng bảng Excel)
+-   **AI Integration:** `google-genai` (Gemini API)
 -   **Quản lý môi trường:** `python-dotenv` (quản lý API Key an toàn)
 
 ## Phases
@@ -24,6 +27,7 @@ DLP Fingerprint Extractor là một công cụ giúp tự động hóa việc tr
 | 04 | AI Evaluation Engine (Gemini) | ✅ Complete | 100% |
 | 05 | Output Generator & CLI | ✅ Complete | 100% |
 | 06 | Testing & Refinement | ✅ Complete | 100% |
+| 07 | Extended Excel/PPTX Support & Formatting | ✅ Complete | 100% |
 
 ## Quick Commands
 - Start Phase 1: `/code phase-01`

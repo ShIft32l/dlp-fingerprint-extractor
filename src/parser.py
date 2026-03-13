@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Optional, Union
 import PyPDF2
 from docx import Document
+import openpyxl
+from pptx import Presentation
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +44,35 @@ def read_pdf(path: Path) -> Optional[str]:
         logger.error(f"Error reading PDF file {path}: {e}")
         return None
 
+def read_xlsx(path: Path) -> Optional[str]:
+    """Reads text from an Excel .xlsx file."""
+    try:
+        wb = openpyxl.load_workbook(path, data_only=True)
+        text_blocks = []
+        for sheet in wb.worksheets:
+            for row in sheet.iter_rows(values_only=True):
+                for cell in row:
+                    if cell is not None and str(cell).strip():
+                        text_blocks.append(str(cell).strip())
+        return "\n".join(text_blocks)
+    except Exception as e:
+        logger.error(f"Error reading XLSX file {path}: {e}")
+        return None
+
+def read_pptx(path: Path) -> Optional[str]:
+    """Reads text from a PowerPoint .pptx file."""
+    try:
+        prs = Presentation(str(path))
+        text_blocks = []
+        for slide in prs.slides:
+            for shape in slide.shapes:
+                if hasattr(shape, "text") and shape.text.strip():
+                    text_blocks.append(shape.text.strip())
+        return "\n".join(text_blocks)
+    except Exception as e:
+        logger.error(f"Error reading PPTX file {path}: {e}")
+        return None
+
 def extract_document_text(path: Union[str, Path]) -> Optional[str]:
     """Factory function to extract text based on file suffix."""
     file_path = Path(path)
@@ -62,6 +93,10 @@ def extract_document_text(path: Union[str, Path]) -> Optional[str]:
         return read_docx(file_path)
     elif suffix == ".pdf":
         return read_pdf(file_path)
+    elif suffix == ".xlsx":
+        return read_xlsx(file_path)
+    elif suffix == ".pptx":
+        return read_pptx(file_path)
     else:
         logger.warning(f"Unsupported file format '{suffix}' for file: {file_path}")
         return None

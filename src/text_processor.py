@@ -7,7 +7,7 @@ Text Processing & Chunking Module
 
 import re
 import logging
-from typing import List
+from typing import List, Dict
 
 import nltk
 
@@ -94,33 +94,39 @@ def split_into_sentences(text: str) -> List[str]:
     return [s.strip() for s in sentences if s.strip()]
 
 
-def extract_long_phrases(text: str, min_tokens: int = 6) -> List[str]:
+def extract_long_phrases(text: str, min_tokens: int = 6) -> Dict[str, int]:
     """
     Full pipeline:
     1. Clean text
     2. Split into sentences
     3. Keep only sentences with >= min_tokens words
 
-    Returns a deduplicated list of candidate phrases.
+    Returns a dictionary of deduplicated candidate phrases mapped to their occurrence count.
+    Note: The dictionary keys are the actual original phrases (first seen case), and values are counts.
     """
     cleaned = clean_text(text)
     sentences = split_into_sentences(cleaned)
 
-    seen = set()
-    candidates: List[str] = []
+    # We map formatted key -> (original phrase, count) to preserve actual casing
+    seen_map = {}
     for sentence in sentences:
         token_count = len(sentence.split())
         if token_count >= min_tokens:
-            # Deduplicate (case-insensitive)
             key = sentence.lower()
-            if key not in seen:
-                seen.add(key)
-                candidates.append(sentence)
+            if key not in seen_map:
+                seen_map[key] = {"phrase": sentence, "count": 1}
+            else:
+                seen_map[key]["count"] += 1
+
+    # Extract the final formatted result
+    candidates_counts: Dict[str, int] = {}
+    for entry in seen_map.values():
+         candidates_counts[entry["phrase"]] = entry["count"]
 
     logger.info(
         "extract_long_phrases: %d sentences → %d candidates (min_tokens=%d)",
         len(sentences),
-        len(candidates),
+        len(candidates_counts),
         min_tokens,
     )
-    return candidates
+    return candidates_counts

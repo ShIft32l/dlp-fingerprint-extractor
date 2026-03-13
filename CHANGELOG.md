@@ -6,9 +6,11 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Project Structure**: Initial setup with `src`, `docs`, `plans`, and `samples` folders.
 - **Environment Logic**: `.env` configuration for Gemini API keys and logging.
-- **Document Parser**: `src/parser.py` supports text extraction from `.txt`, `.docx`, and `.pdf`.
-- **Text Processor**: `src/text_processor.py` for cleaning text, splitting into sentences (NLTK), and filtering long phrases for DLP.
+- **Document Parser**: `src/parser.py` supports text extraction from `.txt`, `.docx`, `.pdf`, `.xlsx`, and `.pptx`.
+- **Text Processor**: `src/text_processor.py` for cleaning text, splitting into sentences (NLTK), filtering long phrases for DLP, and tracking duplicate text frequencies.
 - **AI Evaluation**: `src/ai_evaluator.py` using Gemini 1.5 Flash (google-genai) to score and filter specific DLP fingerprints.
+- **Generator**: Exporting logic now supports outputting to `.xlsx` files with multiple sheets and detailed reporting.
+- **CLI Pipelines**: Added `--skip-ai` and `--format excel` flags.
 - **Testing**: Test scripts for each component (`src/test_*.py`).
 
 ### Changed

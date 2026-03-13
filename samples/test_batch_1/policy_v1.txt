@@ -1,0 +1,15 @@
+Security Policy - Global IT Architecture
+Organization: CyberDyne Systems
+Project: Genesis-2026 Core Infrastructure
+Classification: Internal - Highly Confidential
+
+This document outlines the architectural specifications for the Sydney data center core network.
+All Project Genesis-2026 components must adhere to the Zero Trust security model.
+The core distribution layer utilizes Cisco Nexus 9000 series switches with VXLAN BGP EVPN fabric.
+Direct access to the SQL-Core-Production database is restricted via multi-factor authentication.
+Employee payroll data is stored in the encrypted PII-Vault-01 partition.
+For any issues, contact the Global SOC team immediately.
+Page 1 of 5
+---------------------------------------
+Best regards,
+IT Security Team
