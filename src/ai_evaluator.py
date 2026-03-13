@@ -13,7 +13,7 @@ from typing import List, Optional
 from google import genai
 from google.genai import types
 
-from config import GEMINI_API_KEY
+from .config import GEMINI_API_KEY
 
 logger = logging.getLogger(__name__)
 
