@@ -1,10 +1,17 @@
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, List
 import PyPDF2
 from docx import Document
 import openpyxl
 from pptx import Presentation
+
+try:
+    import pytesseract
+    from pdf2image import convert_from_path
+    OCR_AVAILABLE = True
+except ImportError:
+    OCR_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -29,17 +36,80 @@ def read_docx(path: Path) -> Optional[str]:
         logger.error(f"Error reading DOCX file {path}: {e}")
         return None
 
+def _ocr_pdf_pages(path: Path, page_indices: List[int]) -> List[str]:
+    """OCR specific pages of a PDF using pytesseract.
+    
+    Args:
+        path: Path to the PDF file.
+        page_indices: 0-based indices of pages to OCR.
+    
+    Returns:
+        List of extracted text strings, one per page.
+    """
+    ocr_texts = []
+    try:
+        # Convert only the needed pages to images
+        # pdf2image uses 1-based page numbers
+        for idx in page_indices:
+            images = convert_from_path(
+                str(path),
+                first_page=idx + 1,
+                last_page=idx + 1,
+                dpi=300
+            )
+            if images:
+                text = pytesseract.image_to_string(images[0])
+                ocr_texts.append(text.strip() if text else "")
+            else:
+                ocr_texts.append("")
+    except Exception as e:
+        logger.error(f"OCR failed for {path}: {e}")
+        ocr_texts.extend([""] * (len(page_indices) - len(ocr_texts)))
+    return ocr_texts
+
 def read_pdf(path: Path) -> Optional[str]:
-    """Reads text from a PDF file."""
+    """Reads text from a PDF file.
+    
+    Uses a two-pass strategy:
+    1. Try PyPDF2 text extraction (fast).
+    2. For pages with no text, fall back to OCR via pytesseract.
+    """
     try:
         with open(path, "rb") as f:
             reader = PyPDF2.PdfReader(f)
-            text_blocks = []
-            for page in reader.pages:
+            num_pages = len(reader.pages)
+            text_blocks = [""] * num_pages
+            ocr_needed = []
+
+            # Pass 1: PyPDF2 text extraction
+            for i, page in enumerate(reader.pages):
                 extracted = page.extract_text()
-                if extracted:
-                    text_blocks.append(extracted)
-            return "\n".join(text_blocks)
+                if extracted and extracted.strip():
+                    text_blocks[i] = extracted
+                else:
+                    ocr_needed.append(i)
+
+        # Pass 2: OCR fallback for empty pages
+        if ocr_needed:
+            if not OCR_AVAILABLE:
+                logger.warning(
+                    f"PDF '{path.name}' has {len(ocr_needed)} image-based page(s) "
+                    f"but OCR libs (pytesseract, pdf2image) are not installed. "
+                    f"Install them with: pip install pytesseract pdf2image Pillow"
+                )
+            else:
+                logger.info(
+                    f"Running OCR on {len(ocr_needed)}/{num_pages} page(s) of '{path.name}'..."
+                )
+                ocr_results = _ocr_pdf_pages(path, ocr_needed)
+                for idx, ocr_text in zip(ocr_needed, ocr_results):
+                    if ocr_text:
+                        text_blocks[idx] = ocr_text
+
+        # Filter out empty blocks and join
+        result = "\n".join(block for block in text_blocks if block.strip())
+        return result if result.strip() else None
+
     except Exception as e:
         logger.error(f"Error reading PDF file {path}: {e}")
         return None

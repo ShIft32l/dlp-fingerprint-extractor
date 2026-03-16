@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-03-16]
+### Added
+- **OCR Fallback for PDF**: Integrated `pytesseract` and `pdf2image` to extract text from image-based (scanned) PDF documents.
+- **Two-Pass Strategy**: Parser now tries fast text extraction first, falling back to OCR only for empty pages.
+
 ## [2026-03-13]
 ### Added
 - **Project Structure**: Initial setup with `src`, `docs`, `plans`, and `samples` folders.
