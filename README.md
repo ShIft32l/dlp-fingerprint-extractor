@@ -4,21 +4,29 @@ DLP Fingerprint Extractor is a specialized tool designed to automate the extract
 
 ## Key Features
 - **Multi-format Support**: Parse text from `.pdf`, `.docx`, `.txt`, `.xlsx`, and `.pptx` files.
+- **OCR Fallback for PDFs**: Optimized **two-pass extraction** for PDFs. It uses fast native text extraction first and automatically falls back to OCR (`pytesseract` + `pdf2image`) for scanned/image-based pages.
 - **Smart Text Processing**: Automatic cleaning of boilerplate text (headers, footers, signatures), splitting into meaningful sentence candidates, and tracking duplicate phrase frequencies.
 - **AI Evaluation**: Integration with Google Gemini (1.5 Flash) to score and filter candidate phrases based on organizational specificity.
 - **Dynamic Workflows**: Toggle options to skip AI evaluation (`--skip-ai`) and generate rich `.xlsx` reports with multiple tabs.
-- **Resilitent API Integration**: Built-in exponential backoff for handling Gemini API rate limits.
+- **Resilient API Integration**: Built-in exponential backoff for handling Gemini API rate limits.
 
 ## Setup
 
-1. **Install Dependencies**:
+1. **Install System Dependencies (For OCR)**:
+   This tool requires `tesseract` and `poppler` to process image-based PDFs.
+   ```bash
+   # macOS
+   brew install tesseract poppler
+   ```
+
+2. **Install Python Dependencies**:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
    ```
 
-2. **Configuration**:
+3. **Configuration**:
    Copy `.env.example` to `.env` and add your [Gemini API Key](https://aistudio.google.com/apikey).
    ```bash
    cp .env.example .env
@@ -44,7 +52,7 @@ python3 main.py --input path/to/docs --output output/fingerprints.txt --format t
 
 - `main.py`: Main execution orchestrator.
 - `src/`:
-  - `parser.py`: Document text extraction.
+  - `parser.py`: Document text extraction (includes OCR fallback for scanned PDFs).
   - `text_processor.py`: Cleaning and phrase filtering.
   - `ai_evaluator.py`: Gemini AI scoring logic.
   - `generator.py`: Output file creation.
